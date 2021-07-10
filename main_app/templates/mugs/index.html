@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>My Ugly Mugs</h1>
+
+{% for mug in mugs %}
+    <div class="card">
+      <a href="{% url 'detail' mug.id %}">
+        <div class="card-content">
+            <span class="card-title">{{ mug.name }}</span>
+            <p>Material: {{ mug.material }}</p>
+            <p>Origin: {{ mug.origin }}</p>
+            <p>Color: {{ mug.color }}</p>
+            <p>Description: {{ mug.description }}</p>
+        </div>
+      </a>
+    </div>
+{% endfor %}
+{% endblock%}

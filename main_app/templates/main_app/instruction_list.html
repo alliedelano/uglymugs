@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Care Instructions</h1>
+{% for instruction in instruction_list %}
+    <a href="{% url 'instructions_detail' instruction.id %}">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">{{ instruction.get_tag_display }}</span>
+                <p>Description: {{ instruction.description }}</p>
+            </div>
+        </div>
+    </a>
+{% endfor %}
+
+{% endblock %}

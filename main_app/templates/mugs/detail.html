@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Mug Details</h1>
+<div class="row">
+    <div class="col s6">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">{{ mug.name }}</span>
+                <p>Material: {{ mug.material }}</p>
+                <p>Origin: {{ mug.origin }}</p>
+                <p>Color: {{ mug.color }}</p>
+                <p>Description: {{ mug.description }}</p>
+            </div>
+            <div class="card-action">
+                <a href="{% url 'mugs_update' mug.id %}">Edit</a>
+                <a href="{% url 'mugs_delete' mug.id %}">Delete</a>
+            </div>
+        </div>
+        {% for photo in mug.photo_set.all %}
+        <img class="responsive-img card-panel" src="{{photo.url}}" alt="mug photo">
+        {% empty %}
+        <div class="card-panel text-teal center-align">No Photos Uploaded</div>
+        {% endfor %}
+        <form action="{% url 'add_photo' mug.id %}" method="post" enctype="multipart/form-data" class="card-panel">
+            {% csrf_token %}
+            <input type="file" name="photo-file">
+            <br><br>
+            <input type="submit" class="btn" value="Upload Mugshot">
+        </form>
+    </div>
+    <br>
+        <div class="col s6">
+        <form action="{% url 'add_use' mug.id %}" method="POST">
+            {% csrf_token %}
+            {{ use_form.as_p }}
+            <input type="submit" class="btn" value="Add Use">
+        </form>
+        <br>
+        {% if mug.used_today %}
+        <div class="card-panel red-text center-align">The {{ mug.name }} mug may currently be in use!</div>
+        {% else %}
+        <div class="card-panel teal-text center-align">The {{ mug.name }} mug hasn't been used today!</div>
+        {% endif %}
+        <table class="striped">
+            <thead>
+                <tr><th>Date Used</th><th>Drink</th></tr>
+            </thead>
+            <tbody>
+                {% for use in mug.use_set.all %}
+                <tr>
+                    <td>{{ use.date }}</td>
+                    <td>{{ use.get_drink_display }}</td>
+                </tr>
+                {% endfor%}
+            </tbody>
+        </table>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col s6">
+        <h3>Care Instructions for {{ mug.name }} Mug</h3>
+        {% if mug.instructions.count %}
+            {% for instruction in mug.instructions.all %}
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">
+                            {{ instruction.get_tag_display }}
+                        </span>
+                    </div>
+                    <div class="card-action">
+                        <form action="{% url 'unassoc_inst' mug.id instruction.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h5>No care instructions!</h5>
+        {% endif %}
+    </div>
+    <div class="col s6">
+        <h3>Available Care Instructions</h3>
+        {% if instructions.count %}
+            {% for instruction in instructions.all %}
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">
+                            {{ instruction.get_tag_display }}
+                        </span>
+                    </div>
+                    <div class="card-action">
+                        <form action="{% url 'assoc_inst' mug.id instruction.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn">Add</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h5>Wow - be careful with this one! It already has all care instructions and some are even opposites!</h5>
+        {% endif %}    
+    </div>
+</div>
+
+
+<script>
+    const dateEl = document.getElementById('id_date');
+    M.Datepicker.init(dateEl, {
+      format: 'yyyy-mm-dd',
+      defaultDate: new Date(),
+      setDefaultDate: true,
+      autoClose: true
+    });
+    const selectEl = document.getElementById('id_drink');
+    M.FormSelect.init(selectEl);
+  </script>
+
+{% endblock %}
