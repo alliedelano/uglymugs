@@ -18,15 +18,12 @@
           <li><a href="/" class="left brand-logo">&nbsp;&nbsp;UglyMugCollector</a></li>
         </ul>
         <ul class="right">
-          {% if user.is_authenticated %}
-             <li>Welcome back, {{user.username}}!</li>
-          {% endif %}
           <li><a href="{% url 'about' %}">About</a></li>
           {% if user.is_authenticated %}
-            <li><a href="{% url 'mugs_create' %}">Add a Mug</a></li>
-            <li><a href="{% url 'instructions_create' %}">Add Care Instructions</a></li>
             <li><a href="{% url 'index' %}">View My Mugs</a></li>
+            <li><a href="{% url 'mugs_create' %}">Add a Mug</a></li>
             <li><a href="{% url 'instructions_index' %}">View Care Instructions</a></li>
+            <li><a href="{% url 'instructions_create' %}">Add Care Instructions</a></li>
             <li><a href="{% url 'logout' %}">Log Out</a></li>
           {% else %}
             <li><a href="{% url 'signup' %}">Sign Up</a></li>
@@ -37,6 +34,9 @@
     </nav>
   </header>
   <main class="container">
+    {% if user.is_authenticated %}
+    <p class="teal-text">Welcome back, {{user.username}}!</p>
+    {% endif %}
     {% block content %}
     {% endblock %}
   </main>
