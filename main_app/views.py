@@ -109,7 +109,6 @@ def add_photo(request, mug_id):
             print('An error occurred uploading file to S3')
     return redirect('detail', mug_id=mug_id)
 
-@login_required
 def signup(request):
     error_message = ''
     if request.method == 'POST':
